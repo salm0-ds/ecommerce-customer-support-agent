@@ -20,9 +20,9 @@ logger = logging.getLogger("api")
 from agent import run_turn  # noqa: E402  (import after logging is configured)
 
 _cors_origins = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
+    "https://ecommerce-customer-support-agent.saaim357-a.workers.dev"
 ]
+
 _extra_origin = os.getenv("FRONTEND_ORIGIN", "").strip()
 if _extra_origin:
     _cors_origins.append(_extra_origin)
@@ -35,7 +35,7 @@ app.add_middleware(
     allow_origin_regex=r"https://.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"],
+    allow_headers=["*"]
 )
 
 

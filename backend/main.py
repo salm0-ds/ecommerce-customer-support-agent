@@ -22,10 +22,13 @@ from agent import run_turn  # noqa: E402  (import after logging is configured)
 _cors_origins = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
+    "https://ecommerce-customer-support-agent.saaim357-a.workers.dev",  # Cloudflare frontend
 ]
-_extra_origin = os.getenv("FRONTEND_ORIGIN", "").strip()
-if _extra_origin:
-    _cors_origins.append(_extra_origin)
+# Extra origins, comma-separated, e.g. FRONTEND_ORIGIN=https://shop.example.com,https://www.shop.example.com
+# A trailing slash would never match the browser's Origin header, so it is stripped.
+for _origin in os.getenv("FRONTEND_ORIGIN", "").split(","):
+    if _origin.strip():
+        _cors_origins.append(_origin.strip().rstrip("/"))
 
 app = FastAPI(title="Customer Support API")
 

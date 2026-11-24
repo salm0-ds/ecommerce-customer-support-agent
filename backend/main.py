@@ -1,13 +1,23 @@
+import logging
 import os
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-
-from main4 import run_customer_support_agent
+from pydantic import BaseModel, Field
 
 load_dotenv()
+
+logging.basicConfig(
+    level=os.getenv("LOG_LEVEL", "INFO"),
+    format="%(asctime)s %(levelname)s %(name)s: %(message)s",
+)
+# Keep HTTP client noise out of the logs.
+for noisy in ("httpx", "httpcore", "openai"):
+    logging.getLogger(noisy).setLevel(logging.WARNING)
+logger = logging.getLogger("api")
+
+from agent import run_turn  # noqa: E402  (import after logging is configured)
 
 _cors_origins = [
     "http://localhost:3000",
@@ -30,11 +40,15 @@ app.add_middleware(
 
 
 class ChatRequest(BaseModel):
-    message: str
+    message: str = Field(max_length=2000)
+    conversation_id: str | None = None
 
 
 class ChatResponse(BaseModel):
     reply: str
+    conversation_id: str
+    products: list[dict] = []
+    quick_replies: list[str] = []
 
 
 @app.get("/")
@@ -44,17 +58,25 @@ def read_root():
 
 @app.post("/chat", response_model=ChatResponse)
 def chat(data: ChatRequest):
-    if not data.message.strip():
+    message = data.message.strip()
+    if not message:
         raise HTTPException(status_code=400, detail="message cannot be empty")
 
     try:
-        reply = run_customer_support_agent(data.message.strip())
-    except ValueError as exc:
+        result = run_turn(data.conversation_id, message)
+    except ValueError as exc:  # missing config, e.g. env vars
+        logger.error("Configuration error: %s", exc)
         raise HTTPException(status_code=500, detail=str(exc)) from exc
     except Exception as exc:
+        logger.exception("Chat turn failed for conversation %s", data.conversation_id)
         raise HTTPException(
-            status_code=500,
-            detail="Agent failed to process the message.",
+            status_code=503,
+            detail="The assistant is temporarily unavailable. Please try again.",
         ) from exc
 
-    return ChatResponse(reply=reply)
+    return ChatResponse(
+        reply=result.reply,
+        conversation_id=result.conversation_id,
+        products=result.products,
+        quick_replies=result.quick_replies,
+    )

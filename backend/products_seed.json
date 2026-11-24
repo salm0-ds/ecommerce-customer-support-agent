@@ -1,0 +1,349 @@
+[
+  {
+    "id": "1",
+    "name": "Deep Sleep Complex",
+    "slug": "deep-sleep-complex",
+    "description": "A clinically-formulated blend of magnesium glycinate, L-theanine, and GABA to support restful sleep without morning grogginess. Our slow-release formula helps you fall asleep faster and stay asleep longer.",
+    "short_description": "Fall asleep faster, wake up refreshed",
+    "price": 39.99,
+    "compare_at_price": 49.99,
+    "images": [
+      "/products/sleep-powder.jpg"
+    ],
+    "category": "sleep",
+    "tags": [
+      "bestseller",
+      "sleep",
+      "relaxation"
+    ],
+    "benefits": [
+      "Fall asleep 30% faster",
+      "Deeper REM cycles",
+      "No morning grogginess",
+      "Non-habit forming"
+    ],
+    "ingredients": [
+      {
+        "name": "Magnesium Glycinate",
+        "amount": "400mg",
+        "dailyValue": "95%",
+        "description": "Highly bioavailable form for relaxation"
+      },
+      {
+        "name": "L-Theanine",
+        "amount": "200mg",
+        "description": "Promotes calm without drowsiness"
+      },
+      {
+        "name": "GABA",
+        "amount": "100mg",
+        "description": "Neurotransmitter for relaxation"
+      },
+      {
+        "name": "Melatonin",
+        "amount": "3mg",
+        "description": "Regulates sleep-wake cycle"
+      }
+    ],
+    "rating": 4.9,
+    "review_count": 2847,
+    "in_stock": true,
+    "subscription_available": true,
+    "subscription_discount": 20,
+    "servings": 30,
+    "serving_size": "2 capsules",
+    "certifications": [
+      "Third-Party Tested",
+      "Non-GMO",
+      "Vegan",
+      "GMP Certified"
+    ]
+  },
+  {
+    "id": "2",
+    "name": "Gut Restore Probiotic",
+    "slug": "gut-restore-probiotic",
+    "description": "A comprehensive probiotic featuring 50 billion CFU from 12 clinically-studied strains. Formulated with prebiotic fiber for enhanced colonization and gut barrier support.",
+    "short_description": "Restore your gut microbiome",
+    "price": 44.99,
+    "compare_at_price": null,
+    "images": [
+      "/products/probiotic.jpg"
+    ],
+    "category": "gut-health",
+    "tags": [
+      "gut-health",
+      "immunity",
+      "digestion"
+    ],
+    "benefits": [
+      "50B CFU per serving",
+      "12 diverse strains",
+      "Survives stomach acid",
+      "Includes prebiotics"
+    ],
+    "ingredients": [
+      {
+        "name": "Probiotic Blend",
+        "amount": "50 Billion CFU",
+        "description": "12 clinically-studied strains"
+      },
+      {
+        "name": "Prebiotic Fiber",
+        "amount": "200mg",
+        "description": "Feeds beneficial bacteria"
+      },
+      {
+        "name": "Delayed Release Capsule",
+        "amount": "",
+        "description": "Survives stomach acid"
+      }
+    ],
+    "rating": 4.8,
+    "review_count": 1923,
+    "in_stock": true,
+    "subscription_available": true,
+    "subscription_discount": 20,
+    "servings": 30,
+    "serving_size": "1 capsule",
+    "certifications": [
+      "Third-Party Tested",
+      "Non-GMO",
+      "Gluten Free"
+    ]
+  },
+  {
+    "id": "3",
+    "name": "Focus Flow Nootropic",
+    "slug": "focus-flow-nootropic",
+    "description": "Unlock sustained mental clarity with our science-backed nootropic stack. Combining Lion's Mane, Alpha-GPC, and Bacopa for enhanced focus, memory, and cognitive performance.",
+    "short_description": "Unlock laser-sharp focus",
+    "price": 54.99,
+    "compare_at_price": 64.99,
+    "images": [
+      "/products/focus.jpg"
+    ],
+    "category": "focus",
+    "tags": [
+      "focus",
+      "nootropic",
+      "productivity"
+    ],
+    "benefits": [
+      "Enhanced mental clarity",
+      "Improved memory recall",
+      "Sustained attention",
+      "No jitters or crash"
+    ],
+    "ingredients": [
+      {
+        "name": "Lion's Mane Extract",
+        "amount": "500mg",
+        "description": "Supports nerve growth factor"
+      },
+      {
+        "name": "Alpha-GPC",
+        "amount": "300mg",
+        "description": "Precursor to acetylcholine"
+      },
+      {
+        "name": "Bacopa Monnieri",
+        "amount": "300mg",
+        "description": "Traditional memory herb"
+      },
+      {
+        "name": "Rhodiola Rosea",
+        "amount": "150mg",
+        "description": "Adaptogen for mental stamina"
+      }
+    ],
+    "rating": 4.7,
+    "review_count": 1456,
+    "in_stock": true,
+    "subscription_available": true,
+    "subscription_discount": 20,
+    "servings": 30,
+    "serving_size": "3 capsules",
+    "certifications": [
+      "Third-Party Tested",
+      "Non-GMO",
+      "Vegan"
+    ]
+  },
+  {
+    "id": "4",
+    "name": "Daily Energy Adaptogen",
+    "slug": "daily-energy-adaptogen",
+    "description": "Sustainable all-day energy without the crash. Our adaptogen blend featuring Ashwagandha, Cordyceps, and B-vitamins supports natural energy production and stress resilience.",
+    "short_description": "Clean energy all day long",
+    "price": 42.99,
+    "compare_at_price": null,
+    "images": [
+      "/products/energy.jpg"
+    ],
+    "category": "energy",
+    "tags": [
+      "energy",
+      "adaptogens",
+      "vitality"
+    ],
+    "benefits": [
+      "Sustained energy levels",
+      "No caffeine crash",
+      "Stress resilience",
+      "Mitochondrial support"
+    ],
+    "ingredients": [
+      {
+        "name": "Ashwagandha KSM-66",
+        "amount": "600mg",
+        "description": "Clinically-studied adaptogen"
+      },
+      {
+        "name": "Cordyceps Extract",
+        "amount": "500mg",
+        "description": "Supports ATP production"
+      },
+      {
+        "name": "Vitamin B Complex",
+        "amount": "",
+        "description": "Essential for energy metabolism"
+      },
+      {
+        "name": "CoQ10",
+        "amount": "100mg",
+        "description": "Cellular energy production"
+      }
+    ],
+    "rating": 4.8,
+    "review_count": 2134,
+    "in_stock": true,
+    "subscription_available": true,
+    "subscription_discount": 20,
+    "servings": 30,
+    "serving_size": "2 capsules",
+    "certifications": [
+      "Third-Party Tested",
+      "Non-GMO",
+      "Vegan",
+      "Organic Ingredients"
+    ]
+  },
+  {
+    "id": "5",
+    "name": "Calm & Clarity Blend",
+    "slug": "calm-clarity-blend",
+    "description": "Find your center with our stress-relief formula. Combining Ashwagandha, L-Theanine, and Magnesium for calm focus and reduced anxiety without sedation.",
+    "short_description": "Stress relief meets mental clarity",
+    "price": 38.99,
+    "compare_at_price": null,
+    "images": [
+      "/products/stress.jpg"
+    ],
+    "category": "stress",
+    "tags": [
+      "stress",
+      "anxiety",
+      "calm"
+    ],
+    "benefits": [
+      "Reduces cortisol levels",
+      "Promotes calm focus",
+      "Non-sedating formula",
+      "Fast-acting"
+    ],
+    "ingredients": [
+      {
+        "name": "Ashwagandha KSM-66",
+        "amount": "300mg",
+        "description": "Reduces cortisol up to 30%"
+      },
+      {
+        "name": "L-Theanine",
+        "amount": "200mg",
+        "description": "Promotes alpha brain waves"
+      },
+      {
+        "name": "Magnesium Glycinate",
+        "amount": "200mg",
+        "description": "Relaxes nervous system"
+      },
+      {
+        "name": "Holy Basil",
+        "amount": "150mg",
+        "description": "Traditional adaptogen"
+      }
+    ],
+    "rating": 4.9,
+    "review_count": 1678,
+    "in_stock": true,
+    "subscription_available": true,
+    "subscription_discount": 20,
+    "servings": 30,
+    "serving_size": "2 capsules",
+    "certifications": [
+      "Third-Party Tested",
+      "Non-GMO",
+      "Vegan"
+    ]
+  },
+  {
+    "id": "6",
+    "name": "Hydration Plus Electrolytes",
+    "slug": "hydration-plus-electrolytes",
+    "description": "Optimal hydration with a precise electrolyte ratio. Zero sugar, enhanced with trace minerals and coconut water powder for rapid cellular hydration.",
+    "short_description": "Rapid cellular hydration",
+    "price": 29.99,
+    "compare_at_price": null,
+    "images": [
+      "/products/hydration.jpg"
+    ],
+    "category": "hydration",
+    "tags": [
+      "hydration",
+      "electrolytes",
+      "performance"
+    ],
+    "benefits": [
+      "Rapid hydration",
+      "Zero sugar formula",
+      "Enhanced absorption",
+      "Supports performance"
+    ],
+    "ingredients": [
+      {
+        "name": "Sodium",
+        "amount": "1000mg",
+        "description": "Primary electrolyte for hydration"
+      },
+      {
+        "name": "Potassium",
+        "amount": "200mg",
+        "description": "Muscle and nerve function"
+      },
+      {
+        "name": "Magnesium",
+        "amount": "60mg",
+        "description": "Over 300 enzymatic reactions"
+      },
+      {
+        "name": "Trace Mineral Complex",
+        "amount": "100mg",
+        "description": "72 ionic trace minerals"
+      }
+    ],
+    "rating": 4.7,
+    "review_count": 987,
+    "in_stock": true,
+    "subscription_available": true,
+    "subscription_discount": 20,
+    "servings": 30,
+    "serving_size": "1 scoop (5g)",
+    "certifications": [
+      "Third-Party Tested",
+      "Non-GMO",
+      "Keto Friendly",
+      "Zero Sugar"
+    ]
+  }
+]

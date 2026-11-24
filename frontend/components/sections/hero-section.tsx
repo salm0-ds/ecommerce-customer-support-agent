@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react'
 import { ArrowRight, Sparkles, Shield, Leaf, Truck, Send, X, User } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { ChatMessage } from '@/lib/types'
-import { sendChatMessage } from '@/lib/api'
+import { resetConversation, sendChatMessage } from '@/lib/api'
 import { TypingIndicator } from '@/components/chat/typing-indicator'
 
 const trustBadges = [
@@ -149,6 +149,7 @@ export function HeroSection() {
 
   const closeChat = () => {
     setIsChatOpen(false)
+    resetConversation()
     setMessages([WELCOME_MESSAGE])
     setQuery('')
     setChatInput('')

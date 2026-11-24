@@ -38,6 +38,25 @@ def get_products_by_ids(ids: list[str]) -> list[dict]:
     return [by_id[i] for i in ids if i in by_id]
 
 
+def find_products(
+    category: str | None,
+    min_price: float | None,
+    max_price: float | None,
+    exclude_ids: list[str],
+) -> list[dict]:
+    """In-stock products matching the filters, best rated first."""
+    query = get_client().table("products").select("*").eq("in_stock", True)
+    if category:
+        query = query.eq("category", category)
+    if min_price is not None:
+        query = query.gte("price", min_price)
+    if max_price is not None:
+        query = query.lte("price", max_price)
+    if exclude_ids:
+        query = query.not_.in_("id", exclude_ids)
+    return query.order("rating", desc=True).execute().data
+
+
 def to_frontend_product(row: dict) -> dict:
     """Map a products row to the frontend `Product` type (camelCase)."""
     return {

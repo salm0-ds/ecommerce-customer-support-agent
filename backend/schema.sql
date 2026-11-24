@@ -1,8 +1,5 @@
 -- Run this once in the Supabase SQL editor.
--- Creates: products (with embeddings + full-text), conversations, messages,
--- and the hybrid search function used by the suggest_products tool.
-
-create extension if not exists vector;
+-- Creates: products, reviews, conversations and messages.
 
 -- ---------------------------------------------------------------
 -- Products
@@ -12,23 +9,15 @@ create table if not exists products (
   name              text not null,
   category          text not null,           -- sleep | gut-health | focus | energy | stress | hydration
   short_description text not null default '', -- one-line tagline shown on the card
-  description       text not null default '', -- longer text, only used by search
+  description       text not null default '', -- longer text, read by the AI to pick products
   benefits          text[] not null default '{}',
   price             numeric(10, 2) not null,
   servings          int,
   -- Display values shown on the product cards, set in products_seed.json.
   rating            numeric(2, 1) not null default 0,
   review_count      int not null default 0,
-  in_stock          boolean not null default true,
-  -- Search internals, filled in by seed_products.py. Don't edit by hand.
-  search_text       text not null default '',
-  -- text-embedding-3-small = 1536 dimensions. Change if you change the model.
-  embedding         vector(1536),
-  fts               tsvector generated always as (to_tsvector('english', search_text)) stored
+  in_stock          boolean not null default true
 );
-
-create index if not exists products_fts_idx on products using gin (fts);
--- No vector index needed for a small catalog (exact search is fast under ~10k rows).
 
 -- ---------------------------------------------------------------
 -- Reviews (one row per customer review, read by the backend)
@@ -86,60 +75,3 @@ create policy "Products are public" on products for select using (true);
 -- Reviews are readable by anyone. Only the backend (service_role) can write them.
 drop policy if exists "Reviews are public" on reviews;
 create policy "Reviews are public" on reviews for select using (true);
-
--- ---------------------------------------------------------------
--- Hybrid search: hard filters -> keyword + vector -> reciprocal rank fusion
--- ---------------------------------------------------------------
-create or replace function search_products(
-  query_text      text,
-  query_embedding vector(1536),
-  match_count     int     default 20,
-  filter_category text    default null,
-  min_price       numeric default null,
-  max_price       numeric default null,
-  exclude_ids     text[]  default '{}',
-  rrf_k           int     default 50
-)
-returns table (id text, similarity float, score float)
-language sql stable
-as $$
-  with filtered as (
-    -- 1. Hard filters: things that must be exact
-    select p.*
-    from products p
-    where p.in_stock
-      and (filter_category is null or p.category = filter_category)
-      and (min_price is null or p.price >= min_price)
-      and (max_price is null or p.price <= max_price)
-      and not (p.id = any (exclude_ids))
-  ),
-  semantic as (
-    -- 2a. Vector search: matches meaning ("can't switch off at night" -> sleep)
-    select f.id, row_number() over (order by f.embedding <=> query_embedding) as rank
-    from filtered f
-    where f.embedding is not null
-    order by f.embedding <=> query_embedding
-    limit match_count
-  ),
-  keyword as (
-    -- 2b. Keyword search: matches exact terms ("magnesium", "ashwagandha").
-    -- Words are OR'ed so a long query still matches products containing any of them.
-    select f.id,
-           row_number() over (
-             order by ts_rank_cd(f.fts, websearch_to_tsquery('english', replace(query_text, ' ', ' or '))) desc
-           ) as rank
-    from filtered f
-    where f.fts @@ websearch_to_tsquery('english', replace(query_text, ' ', ' or '))
-    order by rank
-    limit match_count
-  )
-  -- 3. Merge both lists. similarity is returned for every row so the app can apply a threshold.
-  select p.id,
-         1 - (p.embedding <=> query_embedding) as similarity,
-         coalesce(1.0 / (rrf_k + s.rank), 0) + coalesce(1.0 / (rrf_k + k.rank), 0) as score
-  from semantic s
-  full outer join keyword k on s.id = k.id
-  join products p on p.id = coalesce(s.id, k.id)
-  order by score desc
-  limit match_count;
-$$;

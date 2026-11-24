@@ -1,4 +1,4 @@
-"""Load products_seed.json (with search text + embeddings) and reviews_seed.json into Supabase.
+"""Load products_seed.json and reviews_seed.json into Supabase.
 
 Run after schema.sql, and again whenever product or review data changes:
     python seed_products.py
@@ -11,12 +11,11 @@ import sys
 from pathlib import Path
 
 import db
-from product_search import build_search_text, get_embeddings
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
 logger = logging.getLogger("seed")
 
-SEED_FILE = Path(__file__).parent / "products_seed.json"
+PRODUCTS_FILE = Path(__file__).parent / "products_seed.json"
 REVIEWS_FILE = Path(__file__).parent / "reviews_seed.json"
 
 
@@ -29,26 +28,17 @@ def load_json(path: Path) -> list[dict] | None:
 
 
 def main() -> int:
-    products = load_json(SEED_FILE)
+    products = load_json(PRODUCTS_FILE)
     reviews = load_json(REVIEWS_FILE)
     if products is None or reviews is None:
         return 1
 
-    product_ids = {p["id"] for p in products}
-    unknown = {r["product_id"] for r in reviews} - product_ids
+    unknown = {r["product_id"] for r in reviews} - {p["id"] for p in products}
     if unknown:
         logger.error("reviews_seed.json refers to unknown product ids: %s", sorted(unknown))
         return 1
 
-    for p in products:
-        p["search_text"] = build_search_text(p)
-
     try:
-        logger.info("Embedding %d products...", len(products))
-        vectors = get_embeddings().embed_documents([p["search_text"] for p in products])
-        for p, vector in zip(products, vectors):
-            p["embedding"] = vector
-
         client = db.get_client()
         client.table("products").upsert(products).execute()
         logger.info("Seeded %d products", len(products))

@@ -8,35 +8,46 @@ create extension if not exists vector;
 -- Products
 -- ---------------------------------------------------------------
 create table if not exists products (
-  id                     text primary key,
-  name                   text not null,
-  slug                   text unique not null,
-  description            text not null default '',
-  short_description      text not null default '',
-  price                  numeric(10, 2) not null,
-  compare_at_price       numeric(10, 2),
-  images                 text[] not null default '{}',
-  category               text not null,
-  tags                   text[] not null default '{}',
-  benefits               text[] not null default '{}',
-  ingredients            jsonb not null default '[]',
-  rating                 numeric(2, 1) not null default 0,
-  review_count           int not null default 0,
-  in_stock               boolean not null default true,
-  subscription_available boolean not null default false,
-  subscription_discount  int not null default 0,
-  servings               int,
-  serving_size           text,
-  certifications         text[] not null default '{}',
-  -- Combined text that gets embedded and keyword-searched (built by seed_products.py)
-  search_text            text not null default '',
+  id                text primary key,
+  name              text not null,
+  category          text not null,           -- sleep | gut-health | focus | energy | stress | hydration
+  short_description text not null default '', -- one-line tagline shown on the card
+  description       text not null default '', -- longer text, only used by search
+  benefits          text[] not null default '{}',
+  price             numeric(10, 2) not null,
+  servings          int,
+  -- Display values shown on the product cards, set in products_seed.json.
+  rating            numeric(2, 1) not null default 0,
+  review_count      int not null default 0,
+  in_stock          boolean not null default true,
+  -- Search internals, filled in by seed_products.py. Don't edit by hand.
+  search_text       text not null default '',
   -- text-embedding-3-small = 1536 dimensions. Change if you change the model.
-  embedding              vector(1536),
-  fts                    tsvector generated always as (to_tsvector('english', search_text)) stored
+  embedding         vector(1536),
+  fts               tsvector generated always as (to_tsvector('english', search_text)) stored
 );
 
 create index if not exists products_fts_idx on products using gin (fts);
 -- No vector index needed for a small catalog (exact search is fast under ~10k rows).
+
+-- ---------------------------------------------------------------
+-- Reviews (one row per customer review, read by the backend)
+-- Independent of products.rating / review_count, which are display values.
+-- ---------------------------------------------------------------
+create table if not exists reviews (
+  id          bigint generated always as identity primary key,
+  product_id  text not null references products (id) on delete cascade,
+  author_name text not null,               -- e.g. 'Sarah M.'
+  author_role text not null default '',    -- e.g. 'Wellness Creator'
+  rating      smallint not null check (rating between 1 and 5),
+  title       text not null default '',    -- headline, e.g. 'Sleep quality improved 85%'
+  body        text not null default '',    -- the review text
+  created_at  timestamptz not null default now(),
+  -- One review per person per product; also lets seed_products.py re-run safely.
+  unique (product_id, author_name)
+);
+
+create index if not exists reviews_product_idx on reviews (product_id, created_at desc);
 
 -- ---------------------------------------------------------------
 -- Conversations + messages (agent memory)
@@ -67,9 +78,14 @@ create index if not exists messages_conversation_idx on messages (conversation_i
 alter table products      enable row level security;
 alter table conversations enable row level security;
 alter table messages      enable row level security;
+alter table reviews       enable row level security;
 
 drop policy if exists "Products are public" on products;
 create policy "Products are public" on products for select using (true);
+
+-- Reviews are readable by anyone. Only the backend (service_role) can write them.
+drop policy if exists "Reviews are public" on reviews;
+create policy "Reviews are public" on reviews for select using (true);
 
 -- ---------------------------------------------------------------
 -- Hybrid search: hard filters -> keyword + vector -> reciprocal rank fusion

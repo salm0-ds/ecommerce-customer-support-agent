@@ -40,29 +40,28 @@ def get_products_by_ids(ids: list[str]) -> list[dict]:
 
 def to_frontend_product(row: dict) -> dict:
     """Map a products row to the frontend `Product` type (camelCase)."""
-    product = {
+    return {
         "id": row["id"],
         "name": row["name"],
-        "slug": row["slug"],
-        "description": row["description"],
-        "shortDescription": row["short_description"],
-        "price": float(row["price"]),
-        "compareAtPrice": float(row["compare_at_price"]) if row.get("compare_at_price") else None,
-        "images": row["images"],
         "category": row["category"],
-        "tags": row["tags"],
+        "shortDescription": row["short_description"],
+        "description": row["description"],
         "benefits": row["benefits"],
-        "ingredients": row["ingredients"],
+        "price": float(row["price"]),
+        "servings": row["servings"],
         "rating": float(row["rating"]),
         "reviewCount": row["review_count"],
         "inStock": row["in_stock"],
-        "subscriptionAvailable": row["subscription_available"],
-        "subscriptionDiscount": row["subscription_discount"],
-        "servings": row["servings"],
-        "servingSize": row["serving_size"],
-        "certifications": row["certifications"],
+        # Fields the frontend type still has but the store doesn't use. Fixed values keep
+        # the card working (e.g. no subscription price shown) without changing the frontend.
+        "slug": row["id"],
+        "images": [],
+        "tags": [],
+        "ingredients": [],
+        "certifications": [],
+        "subscriptionAvailable": False,
+        "subscriptionDiscount": 0,
     }
-    return {k: v for k, v in product.items() if v is not None}  # optional fields are omitted, not null
 
 
 # ---------------------------------------------------------------

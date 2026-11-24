@@ -56,16 +56,12 @@ def get_embeddings() -> OpenAIEmbeddings:
 
 def build_search_text(product: dict) -> str:
     """The text that represents a product for both keyword and vector search."""
-    ingredients = ", ".join(i["name"] for i in product.get("ingredients", []))
     return " | ".join([
         product["name"],
         f"Category: {product['category']}",
         product.get("short_description", ""),
         product.get("description", ""),
         f"Benefits: {', '.join(product.get('benefits', []))}",
-        f"Ingredients: {ingredients}",
-        f"Tags: {', '.join(product.get('tags', []))}",
-        f"Certifications: {', '.join(product.get('certifications', []))}",
     ])
 
 
@@ -105,8 +101,8 @@ def suggest_products(args: SuggestProducts, exclude_ids: list[str]) -> dict:
                 "category": p["category"],
                 "price": float(p["price"]),
                 "short_description": p["short_description"],
+                "description": p["description"],
                 "benefits": p["benefits"],
-                "key_ingredients": [i["name"] for i in p["ingredients"]][:4],
                 "rating": float(p["rating"]),
                 "relevance": similarity[p["id"]],
             }

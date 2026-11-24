@@ -1,0 +1,34 @@
+[
+  {
+    "product_id": "1",
+    "author_name": "Sarah M.",
+    "author_role": "Wellness Creator",
+    "rating": 5,
+    "title": "Sleep quality improved 85%",
+    "body": "The Deep Sleep Complex changed my life. I went from 4-5 hours of broken sleep to 7-8 hours of quality rest. My morning energy is through the roof!"
+  },
+  {
+    "product_id": "3",
+    "author_name": "James K.",
+    "author_role": "Software Engineer",
+    "rating": 5,
+    "title": "Productivity up 30%",
+    "body": "Focus Flow is the real deal. No jitters like coffee, just clean, sustained focus. I've cut my work time by 30% while actually enjoying the process."
+  },
+  {
+    "product_id": "2",
+    "author_name": "Emma L.",
+    "author_role": "Fitness Coach",
+    "rating": 5,
+    "title": "Bloating reduced 90%",
+    "body": "Finally, a gut supplement that works! The Gut Restore Probiotic eliminated my bloating within 2 weeks. My clients are now taking it too."
+  },
+  {
+    "product_id": "4",
+    "author_name": "David R.",
+    "author_role": "Startup Founder",
+    "rating": 5,
+    "title": "Energy sustained all day",
+    "body": "I was skeptical about adaptogens, but Daily Energy changed my mind. Sustainable energy without the 3pm crash. Essential for my 12-hour days."
+  }
+]

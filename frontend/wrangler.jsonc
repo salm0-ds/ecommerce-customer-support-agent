@@ -1,0 +1,10 @@
+{
+  // Cloudflare Worker that serves the static frontend built into `out/`.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "ecommerce-customer-support-agent",
+  "compatibility_date": "2026-11-24",
+  "assets": {
+    "directory": "./out",
+    "not_found_handling": "404-page"
+  }
+}

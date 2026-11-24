@@ -14,8 +14,9 @@
 import { 
   Product, 
   Order, 
-  ChatMessage, 
-  SupportAnalytics, 
+  ChatMessage,
+  AICard,
+  SupportAnalytics,
   QuizQuestion, 
   QuizResult,
   APIResponse 
@@ -176,18 +177,31 @@ export async function requestRefund(orderId: string, reason: string): Promise<{
 // AI CHAT API
 // ============================================
 
+// The backend creates a conversation on the first message and returns its id.
+// We send it back each time so the agent remembers the chat (and products already shown).
+let currentConversationId: string | null = null
+
+/** Start a fresh conversation (e.g. when the chat is closed). */
+export function resetConversation() {
+  currentConversationId = null
+}
+
+interface ChatAPIResponse {
+  reply: string
+  conversation_id: string
+  products: Product[]
+  quick_replies: string[]
+}
+
 /**
  * Send message to the FastAPI customer support agent.
- * POST {API_BASE_URL}/chat  →  { reply: string }
+ * POST {API_BASE_URL}/chat  →  { reply, conversation_id, products, quick_replies }
  */
-export async function sendChatMessage(
-  message: string,
-  _conversationId?: string
-): Promise<ChatMessage> {
+export async function sendChatMessage(message: string): Promise<ChatMessage> {
   const response = await fetch(`${API_BASE_URL}/chat`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ message }),
+    body: JSON.stringify({ message, conversation_id: currentConversationId }),
   })
 
   if (!response.ok) {
@@ -199,13 +213,27 @@ export async function sendChatMessage(
     throw new Error(detail)
   }
 
-  const data: { reply: string } = await response.json()
+  const data: ChatAPIResponse = await response.json()
+  currentConversationId = data.conversation_id
+
+  const cards: AICard[] = (data.products ?? []).map((product): AICard => ({
+    type: 'product',
+    data: { product },
+  }))
+  if (data.quick_replies?.length) {
+    // A quick reply is sent back as a normal user message (its value is its label).
+    cards.push({
+      type: 'quick-actions',
+      data: { actions: data.quick_replies.map(label => ({ label, value: label })) },
+    })
+  }
 
   return {
     id: Date.now().toString(),
     role: 'assistant',
     content: data.reply,
     timestamp: new Date().toISOString(),
+    cards: cards.length ? cards : undefined,
   }
 }
 
